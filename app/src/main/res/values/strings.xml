@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SocketTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="title">SOCKET DEBUG</string>
+    <string name="ip">IP</string>
+    <string name="hintip">192.168.1.202</string>
+    <string name="port">Porta</string>
+    <string name="hintporta">8888</string>
+    <string name="connect">Connetti</string>
+    <string name="disconnect">Disconnetti</string>
+    <string name="sendstring">Stringa da inviare</string>
+    <string name="send">Invia</string>
+
+</resources>
