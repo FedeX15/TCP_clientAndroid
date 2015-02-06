@@ -129,7 +129,7 @@ public class Home extends ActionBarActivity {
             output.setText("Disconnesso");
             output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         } catch (IOException e) {
-            output.setText("ERRORE [IO]");
+            output.setText("ERRORE [IO]"); //TODO boh
         }
     }
 }
