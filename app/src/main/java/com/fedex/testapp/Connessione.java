@@ -20,13 +20,15 @@ import java.net.UnknownHostException;
 public class Connessione extends AsyncTask<String, Void, String> {
     private InetAddress serveraddr;
     private int porta;
+    private boolean SQL;
     public Socket socket;
 
-    public Connessione (String ip, int porta) {
+    public Connessione (String ip, int porta, boolean sql) {
         try {
             this.serveraddr = InetAddress.getByName(ip);
             this.porta = porta;
             this.socket = null;
+            this.SQL = sql;
         } catch (UnknownHostException e) {
         } catch (IOException e) {
         }

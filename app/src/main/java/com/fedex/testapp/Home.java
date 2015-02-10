@@ -28,11 +28,13 @@ import java.util.concurrent.ExecutionException;
 
 public class Home extends ActionBarActivity {
     private Connessione connessione;
+    private boolean SQL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        this.SQL = false;
     }
 
 
@@ -67,7 +69,7 @@ public class Home extends ActionBarActivity {
 
         try {
             output.setText("Connessione..."); //Segnalo il tentativo in corso
-            connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString())); //Creo la connessione
+            connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL); //Creo la connessione
             String cod = connessione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "connetti").get(); //Avvio la connessione
             //Perché su classe diversa: necessario thread a parte per operazioni di rete (perché Android vuole così, specifica di sicurezza)
 
@@ -129,7 +131,37 @@ public class Home extends ActionBarActivity {
             output.setText("Disconnesso");
             output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         } catch (IOException e) {
-            output.setText("ERRORE [IO]"); //TODO boh
+            output.setText("ERRORE [IO]");
+        }
+    }
+
+    public void abilitaSQL(View v) {
+        SQL = !SQL;
+        TextView usrlbl = (TextView) findViewById(R.id.textView4);
+        EditText txtusr = (EditText) findViewById(R.id.txtUsr);
+        TextView pwdlbl = (TextView) findViewById(R.id.pwdText);
+        EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
+        TextView dblbl = (TextView) findViewById(R.id.textView5);
+        EditText txtdb = (EditText) findViewById(R.id.txtDb);
+
+        EditText txtporta = (EditText) findViewById(R.id.txtPorta);
+
+        if (SQL) {
+            usrlbl.setVisibility(View.VISIBLE);
+            txtusr.setVisibility(View.VISIBLE);
+            pwdlbl.setVisibility(View.VISIBLE);
+            txtpwd.setVisibility(View.VISIBLE);
+            dblbl.setVisibility(View.VISIBLE);
+            txtdb.setVisibility(View.VISIBLE);
+            txtporta.setHint("3306");
+        } else {
+            usrlbl.setVisibility(View.GONE);
+            txtusr.setVisibility(View.GONE);
+            pwdlbl.setVisibility(View.GONE);
+            txtpwd.setVisibility(View.GONE);
+            dblbl.setVisibility(View.GONE);
+            txtdb.setVisibility(View.GONE);
+            txtporta.setHint("1234");
         }
     }
 }
