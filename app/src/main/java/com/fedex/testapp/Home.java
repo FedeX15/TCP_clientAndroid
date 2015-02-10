@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -65,21 +66,32 @@ public class Home extends ActionBarActivity {
         EditText portatxt = (EditText) findViewById(R.id.txtPorta);
         TextView output = (TextView) findViewById(R.id.txtConnessione);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-        Button invio = (Button) findViewById(R.id.inviaBtn); //Inizializzazione da interfaccia
+        Button invio = (Button) findViewById(R.id.inviaBtn);
+        EditText txtusr = (EditText) findViewById(R.id.txtUsr);
+        EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
+        EditText txtdb = (EditText) findViewById(R.id.txtDb); //Inizializzazione da interfaccia
 
         try {
             output.setText("Connessione..."); //Segnalo il tentativo in corso
-            connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL); //Creo la connessione
+            connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL, txtusr.getText().toString(), txtpwd.getText().toString(), txtdb.getText().toString()); //Creo la connessione
             String cod = connessione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "connetti").get(); //Avvio la connessione
             //Perché su classe diversa: necessario thread a parte per operazioni di rete (perché Android vuole così, specifica di sicurezza)
 
             switch (Integer.parseInt(cod)) { //A seconda del codice ritornato, stampo il risultato della connessione
                 case -1:
-                    output.setText("ERRORE [UnknownHost]");
+                    if (SQL) {
+                        output.setText("ERRORE [SQL]");
+                    } else {
+                        output.setText("ERRORE [UnknownHost]");
+                    }
                     break;
 
                 case -2:
-                    output.setText("ERRORE [IO]");
+                    if (SQL) {
+                        output.setText("ERRORE [ClassNotFound]");
+                    } else {
+                        output.setText("ERRORE [IO]");
+                    }
                     break;
 
                 case -3:
@@ -95,20 +107,32 @@ public class Home extends ActionBarActivity {
                     break;
             }
         } catch (Exception ex) {} //TODO correggere
+        //TODO
     }
 
     public void invia(View v) { //Funzione richiamata dal pulsante "Invia"
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
         TextView outputview = (TextView) findViewById(R.id.txtOutput); //Inizializzazione da interfaccia
-        try {
-            DataOutputStream outstream = new DataOutputStream(connessione.socket.getOutputStream());
-            outstream.writeBytes(outstring.getText().toString() + "\n");
-            Invio invio = new Invio(connessione.socket); //Inizializzo connessione, stesso discorso di prima
-            String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
-            outputview.setText(output);
-        } catch (IOException e) {
-        } catch (InterruptedException e) {
-        } catch (ExecutionException e) {
+        if (SQL) {
+            Invio invio = new Invio(connessione.socket, connessione.connection, SQL, outstring.getText().toString());
+
+            try {
+                String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+                outputview.setText(output);
+            } catch (InterruptedException e) {
+            } catch (ExecutionException e) {
+            }
+        } else {
+            try {
+                DataOutputStream outstream = new DataOutputStream(connessione.socket.getOutputStream());
+                outstream.writeBytes(outstring.getText().toString() + "\n");
+                Invio invio = new Invio(connessione.socket, connessione.connection, SQL, ""); //Inizializzo connessione, stesso discorso di prima
+                String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+                outputview.setText(output);
+            } catch (IOException e) {
+            } catch (InterruptedException e) {
+            } catch (ExecutionException e) {
+            }
         }
     }
 
@@ -121,8 +145,13 @@ public class Home extends ActionBarActivity {
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
 
         try {
-            connessione.socket.close();
-            connessione = null;
+            if (SQL) {
+                connessione.connection.close();
+                connessione = null;
+            } else {
+                connessione.socket.close();
+                connessione = null;
+            }
             invio.setEnabled(false);
             disconnetti.setEnabled(false);
             connetti.setEnabled(true);
@@ -132,6 +161,8 @@ public class Home extends ActionBarActivity {
             output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         } catch (IOException e) {
             output.setText("ERRORE [IO]");
+        } catch (SQLException e) {
+            output.setText("ERRORE [SQL]");
         }
     }
 
