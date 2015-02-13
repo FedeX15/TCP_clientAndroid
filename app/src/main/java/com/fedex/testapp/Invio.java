@@ -72,7 +72,8 @@ public class Invio extends AsyncTask<String, Void, String> {
                 return "ERRORE INVIO [SQL]";
             }
         } else {
-            try {
+            return "";
+            /*try {
                 InputStream instream = socket.getInputStream();
                 BufferedReader readerbuff = new BufferedReader(new InputStreamReader(instream));
                 String input = readerbuff.readLine();
@@ -84,7 +85,7 @@ public class Invio extends AsyncTask<String, Void, String> {
                 return input;
             } catch (IOException ex) {
                 return "ERRORE INVIO [IO]";
-            }
+            }*/
         }
     }
 }

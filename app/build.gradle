@@ -22,5 +22,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile project(':mysql-connector-java-5.1.34-bin')
+    compile files('libs/mysql-connector-java-5.1.34-bin.jar')
 }

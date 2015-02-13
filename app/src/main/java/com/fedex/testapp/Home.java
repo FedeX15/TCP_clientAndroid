@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -30,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 public class Home extends ActionBarActivity {
     private Connessione connessione;
     private boolean SQL;
+    private String input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +66,13 @@ public class Home extends ActionBarActivity {
     public void connetti(View v) { //Funzione richiamata dal pulsante "Connetti"
         EditText iptxt = (EditText) findViewById(R.id.txtIp);
         EditText portatxt = (EditText) findViewById(R.id.txtPorta);
-        TextView output = (TextView) findViewById(R.id.txtConnessione);
+        final TextView output = (TextView) findViewById(R.id.txtConnessione);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
         Button invio = (Button) findViewById(R.id.inviaBtn);
         EditText txtusr = (EditText) findViewById(R.id.txtUsr);
         EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
-        EditText txtdb = (EditText) findViewById(R.id.txtDb); //Inizializzazione da interfaccia
+        EditText txtdb = (EditText) findViewById(R.id.txtDb);
+        Switch sql = (Switch) findViewById(R.id.switch1); //Inizializzazione da interfaccia
 
         try {
             output.setText("Connessione..."); //Segnalo il tentativo in corso
@@ -100,9 +103,14 @@ public class Home extends ActionBarActivity {
 
                 case 0:
                     output.setText("Connesso");
+                    TextView outputview = (TextView) findViewById(R.id.txtOutput);
+                    Ricezione ricezione = new Ricezione(connessione, outputview);
+                    ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
                     output.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                     invio.setEnabled(true);
                     disconnetti.setEnabled(true);
+                    sql.setEnabled(false);
                     v.setEnabled(false); //Se connesso, segnalo successo, attivo pulsanti e barra per invio e disconnessione
                     break;
             }
@@ -113,6 +121,7 @@ public class Home extends ActionBarActivity {
     public void invia(View v) { //Funzione richiamata dal pulsante "Invia"
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
         TextView outputview = (TextView) findViewById(R.id.txtOutput); //Inizializzazione da interfaccia
+
         if (SQL) {
             Invio invio = new Invio(connessione.socket, connessione.connection, SQL, outstring.getText().toString());
 
@@ -126,12 +135,9 @@ public class Home extends ActionBarActivity {
             try {
                 DataOutputStream outstream = new DataOutputStream(connessione.socket.getOutputStream());
                 outstream.writeBytes(outstring.getText().toString() + "\n");
-                Invio invio = new Invio(connessione.socket, connessione.connection, SQL, ""); //Inizializzo connessione, stesso discorso di prima
-                String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
-                outputview.setText(output);
+                //Invio invio = new Invio(connessione.socket, connessione.connection, SQL, ""); //Inizializzo connessione, stesso discorso di prima
+                //String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
             } catch (IOException e) {
-            } catch (InterruptedException e) {
-            } catch (ExecutionException e) {
             }
         }
     }
@@ -143,6 +149,7 @@ public class Home extends ActionBarActivity {
         Button invio = (Button) findViewById(R.id.inviaBtn);
         TextView outputview = (TextView) findViewById(R.id.txtOutput);
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
+        Switch sql = (Switch) findViewById(R.id.switch1);
 
         try {
             if (SQL) {
@@ -155,6 +162,7 @@ public class Home extends ActionBarActivity {
             invio.setEnabled(false);
             disconnetti.setEnabled(false);
             connetti.setEnabled(true);
+            sql.setEnabled(true);
             outputview.setText("");
             outstring.setText("");
             output.setText("Disconnesso");
@@ -174,7 +182,6 @@ public class Home extends ActionBarActivity {
         EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
         TextView dblbl = (TextView) findViewById(R.id.textView5);
         EditText txtdb = (EditText) findViewById(R.id.txtDb);
-
         EditText txtporta = (EditText) findViewById(R.id.txtPorta);
 
         if (SQL) {
