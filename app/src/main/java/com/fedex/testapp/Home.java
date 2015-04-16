@@ -1,5 +1,6 @@
 package com.fedex.testapp;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -27,10 +28,9 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-
 public class Home extends ActionBarActivity {
-    private Connessione connessione;
-    private boolean SQL;
+    public static Connessione connessione;
+    public static boolean SQL;
     private String input;
 
     @Override
@@ -66,112 +66,47 @@ public class Home extends ActionBarActivity {
     public void connetti(View v) { //Funzione richiamata dal pulsante "Connetti"
         EditText iptxt = (EditText) findViewById(R.id.txtIp);
         EditText portatxt = (EditText) findViewById(R.id.txtPorta);
-        final TextView output = (TextView) findViewById(R.id.txtConnessione);
-        Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-        Button invio = (Button) findViewById(R.id.inviaBtn);
         EditText txtusr = (EditText) findViewById(R.id.txtUsr);
         EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
         EditText txtdb = (EditText) findViewById(R.id.txtDb);
-        Switch sql = (Switch) findViewById(R.id.switch1); //Inizializzazione da interfaccia
-
+        Switch sql = (Switch) findViewById(R.id.switch1);
+         //Inizializzazione da interfaccia
         try {
-            output.setText("Connessione..."); //Segnalo il tentativo in corso
             connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL, txtusr.getText().toString(), txtpwd.getText().toString(), txtdb.getText().toString()); //Creo la connessione
             String cod = connessione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "connetti").get(); //Avvio la connessione
+            Log.v("Connessione", "tentativone");
             //Perché su classe diversa: necessario thread a parte per operazioni di rete (perché Android vuole così, specifica di sicurezza)
 
             switch (Integer.parseInt(cod)) { //A seconda del codice ritornato, stampo il risultato della connessione
                 case -1:
                     if (SQL) {
-                        output.setText("ERRORE [SQL]");
+                        //output.setText("ERRORE [SQL]");
                     } else {
-                        output.setText("ERRORE [UnknownHost]");
+                        //output.setText("ERRORE [UnknownHost]");
                     }
                     break;
 
                 case -2:
                     if (SQL) {
-                        output.setText("ERRORE [ClassNotFound]");
+                        //output.setText("ERRORE [ClassNotFound]");
                     } else {
-                        output.setText("ERRORE [IO]");
+                        //output.setText("ERRORE [IO]");
                     }
                     break;
 
                 case -3:
-                    output.setText("ERRORE [NumberFormat]");
+                    //output.setText("ERRORE [NumberFormat]");
                     break;
 
                 case 0:
-                    output.setText("Connesso");
-                    TextView outputview = (TextView) findViewById(R.id.txtOutput);
-                    Ricezione ricezione = new Ricezione(connessione, outputview);
-                    ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-                    output.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                    invio.setEnabled(true);
-                    disconnetti.setEnabled(true);
-                    sql.setEnabled(false);
-                    v.setEnabled(false); //Se connesso, segnalo successo, attivo pulsanti e barra per invio e disconnessione
+                    Intent intent = new Intent(this, CommActivity.class);
+                    startActivity(intent);
                     break;
             }
-        } catch (Exception ex) {} //TODO correggere
+        } catch (Exception ex) {
+            Log.d("Eccezione", ex.getMessage());
+        } //TODO correggere
         //TODO
-    }
-
-    public void invia(View v) { //Funzione richiamata dal pulsante "Invia"
-        EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        TextView outputview = (TextView) findViewById(R.id.txtOutput); //Inizializzazione da interfaccia
-
-        if (SQL) {
-            Invio invio = new Invio(connessione.socket, connessione.connection, SQL, outstring.getText().toString());
-
-            try {
-                String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
-                outputview.setText(output);
-            } catch (InterruptedException e) {
-            } catch (ExecutionException e) {
-            }
-        } else {
-            try {
-                DataOutputStream outstream = new DataOutputStream(connessione.socket.getOutputStream());
-                outstream.writeBytes(outstring.getText().toString() + "\n");
-                //Invio invio = new Invio(connessione.socket, connessione.connection, SQL, ""); //Inizializzo connessione, stesso discorso di prima
-                //String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    public void disconnetti(View v) {
-        TextView output = (TextView) findViewById(R.id.txtConnessione);
-        Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-        Button connetti = (Button) findViewById(R.id.connettiBtn);
-        Button invio = (Button) findViewById(R.id.inviaBtn);
-        TextView outputview = (TextView) findViewById(R.id.txtOutput);
-        EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        Switch sql = (Switch) findViewById(R.id.switch1);
-
-        try {
-            if (SQL) {
-                connessione.connection.close();
-                connessione = null;
-            } else {
-                connessione.socket.close();
-                connessione = null;
-            }
-            invio.setEnabled(false);
-            disconnetti.setEnabled(false);
-            connetti.setEnabled(true);
-            sql.setEnabled(true);
-            outputview.setText("");
-            outstring.setText("");
-            output.setText("Disconnesso");
-            output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-        } catch (IOException e) {
-            output.setText("ERRORE [IO]");
-        } catch (SQLException e) {
-            output.setText("ERRORE [SQL]");
-        }
     }
 
     public void abilitaSQL(View v) {

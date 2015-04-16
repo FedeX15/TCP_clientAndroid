@@ -13,5 +13,6 @@
     <string name="disconnect">Disconnetti</string>
     <string name="sendstring">Stringa da inviare</string>
     <string name="send">Invia</string>
+    <string name="title_activity_comm">CommActivity</string>
 
 </resources>
