@@ -30,16 +30,44 @@ import java.util.concurrent.ExecutionException;
 
 public class Home extends ActionBarActivity {
     public static Connessione connessione;
-    public static boolean SQL;
+    public static boolean SQL = false;
     private String input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        this.SQL = false;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        TextView usrlbl = (TextView) findViewById(R.id.textView4);
+        EditText txtusr = (EditText) findViewById(R.id.txtUsr);
+        TextView pwdlbl = (TextView) findViewById(R.id.pwdText);
+        EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
+        TextView dblbl = (TextView) findViewById(R.id.textView5);
+        EditText txtdb = (EditText) findViewById(R.id.txtDb);
+        EditText txtporta = (EditText) findViewById(R.id.txtPorta);
+
+        if (SQL) {
+            usrlbl.setVisibility(View.VISIBLE);
+            txtusr.setVisibility(View.VISIBLE);
+            pwdlbl.setVisibility(View.VISIBLE);
+            txtpwd.setVisibility(View.VISIBLE);
+            dblbl.setVisibility(View.VISIBLE);
+            txtdb.setVisibility(View.VISIBLE);
+            txtporta.setHint("3306");
+        } else {
+            usrlbl.setVisibility(View.GONE);
+            txtusr.setVisibility(View.GONE);
+            pwdlbl.setVisibility(View.GONE);
+            txtpwd.setVisibility(View.GONE);
+            dblbl.setVisibility(View.GONE);
+            txtdb.setVisibility(View.GONE);
+            txtporta.setHint("1234");
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,6 +85,8 @@ public class Home extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -109,32 +139,8 @@ public class Home extends ActionBarActivity {
         //TODO
     }
 
-    public void abilitaSQL(View v) {
+    /*public void abilitaSQL(View v) {
         SQL = !SQL;
-        TextView usrlbl = (TextView) findViewById(R.id.textView4);
-        EditText txtusr = (EditText) findViewById(R.id.txtUsr);
-        TextView pwdlbl = (TextView) findViewById(R.id.pwdText);
-        EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
-        TextView dblbl = (TextView) findViewById(R.id.textView5);
-        EditText txtdb = (EditText) findViewById(R.id.txtDb);
-        EditText txtporta = (EditText) findViewById(R.id.txtPorta);
 
-        if (SQL) {
-            usrlbl.setVisibility(View.VISIBLE);
-            txtusr.setVisibility(View.VISIBLE);
-            pwdlbl.setVisibility(View.VISIBLE);
-            txtpwd.setVisibility(View.VISIBLE);
-            dblbl.setVisibility(View.VISIBLE);
-            txtdb.setVisibility(View.VISIBLE);
-            txtporta.setHint("3306");
-        } else {
-            usrlbl.setVisibility(View.GONE);
-            txtusr.setVisibility(View.GONE);
-            pwdlbl.setVisibility(View.GONE);
-            txtpwd.setVisibility(View.GONE);
-            dblbl.setVisibility(View.GONE);
-            txtdb.setVisibility(View.GONE);
-            txtporta.setHint("1234");
-        }
-    }
+    }*/
 }

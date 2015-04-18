@@ -14,5 +14,6 @@
     <string name="sendstring">Stringa da inviare</string>
     <string name="send">Invia</string>
     <string name="title_activity_comm">CommActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
 </resources>
