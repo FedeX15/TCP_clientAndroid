@@ -44,6 +44,6 @@ public class Ricezione extends AsyncTask<String, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        output.setText(values[0]);
+        output.append(values[0] + "\n");
     }
 }

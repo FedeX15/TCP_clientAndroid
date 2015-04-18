@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SocketTest</string>
+    <string name="app_name">Socket Test</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Impostazioni</string>
-    <string name="title">SOCKET DEBUG</string>
+    <string name="title">Socket Test</string>
     <string name="ip">IP</string>
     <string name="hintip">192.168.1.202</string>
     <string name="port">Porta</string>
@@ -15,5 +15,14 @@
     <string name="send">Invia</string>
     <string name="title_activity_comm">CommActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="disconnesso">Disconnesso</string>
+    <string name="disconnetti">Disconnetti</string>
+    <string name="porta">Porta</string>
+    <string name="usr">Usr</string>
+    <string name="pwd">Pwd</string>
+    <string name="database">Database</string>
+    <string name="connetti">Connetti</string>
+    <string name="impostazioni">Impostazioni</string>
+    <string name="comunicazione">Comunicazione</string>
 
 </resources>

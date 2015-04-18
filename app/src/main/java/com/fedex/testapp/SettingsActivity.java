@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 
 
 public class SettingsActivity extends ActionBarActivity {
@@ -13,13 +14,17 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        setTitle(getString(R.string.impostazioni));
+
+        Switch SQL = (Switch) findViewById(R.id.switch1);
+        SQL.setChecked(Home.SQL);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        //getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
     }
 

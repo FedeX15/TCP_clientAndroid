@@ -24,6 +24,7 @@ public class CommActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comm);
+        setTitle(getString(R.string.comunicazione));
 
         TextView output = (TextView) findViewById(R.id.txtConnessione);
         TextView outputview = (TextView) findViewById(R.id.txtOutput);
@@ -33,6 +34,7 @@ public class CommActivity extends ActionBarActivity {
         Ricezione ricezione = new Ricezione(Home.connessione, outputview);
         ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+        log("Connesso [" + System.currentTimeMillis() + "]");
         output.setText("Connesso");
         output.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         invio.setEnabled(true);
@@ -43,8 +45,13 @@ public class CommActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_comm, menu);
+        //getMenuInflater().inflate(R.menu.menu_comm, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        disconnetti(null);
     }
 
     @Override
@@ -64,12 +71,10 @@ public class CommActivity extends ActionBarActivity {
 
     public void disconnetti(View v) {
         TextView output = (TextView) findViewById(R.id.txtConnessione);
-        Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-        Button connetti = (Button) findViewById(R.id.connettiBtn);
+        /*Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
         Button invio = (Button) findViewById(R.id.inviaBtn);
         TextView outputview = (TextView) findViewById(R.id.txtOutput);
-        EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        Switch sql = (Switch) findViewById(R.id.switch1);
+        EditText outstring = (EditText) findViewById(R.id.txtStringa);*/
 
         try {
             if (Home.SQL) {
@@ -79,14 +84,15 @@ public class CommActivity extends ActionBarActivity {
                 Home.connessione.socket.close();
                 Home.connessione = null;
             }
-            invio.setEnabled(false);
-            disconnetti.setEnabled(false);
-            outputview.setText("");
-            outstring.setText("");
+            /*invio.setEnabled(false);
+            disconnetti.setEnabled(false);*/
+            /*outputview.setText("");
+            outstring.setText("");*/
             output.setText("Disconnesso");
             output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            Intent intent = new Intent(this, Home.class);
-            startActivity(intent);
+            super.onBackPressed();
+            /*Intent intent = new Intent(this, Home.class);
+            startActivity(intent);*/
         } catch (IOException e) {
             output.setText("ERRORE [IO]");
         } catch (SQLException e) {
@@ -103,7 +109,7 @@ public class CommActivity extends ActionBarActivity {
 
             try {
                 String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
-                outputview.setText(outputview.getText() + "\n" + output);
+                outputview.setText(output);
             } catch (InterruptedException e) {
             } catch (ExecutionException e) {
             }
@@ -111,8 +117,14 @@ public class CommActivity extends ActionBarActivity {
             try {
                 DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                 outstream.writeBytes(outstring.getText().toString() + "\n");
+                outputview.append(">" + outstring.getText().toString() + "\n");
             } catch (IOException e) {
             }
         }
+    }
+
+    public void log(String str) {
+        TextView logview = (TextView) findViewById(R.id.txtLog);
+        logview.append(str + "\n");
     }
 }

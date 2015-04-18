@@ -22,7 +22,8 @@
         </activity>
         <activity
             android:name=".CommActivity"
-            android:label="@string/title_activity_comm" >
+            android:label="@string/title_activity_comm"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
         <activity
             android:name=".SettingsActivity"
