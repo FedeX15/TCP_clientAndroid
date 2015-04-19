@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,12 +26,14 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class Home extends ActionBarActivity {
     public static Connessione connessione;
     public static boolean SQL = false;
+    public static HashMap<InetAddress, Integer> servers;
     private String input;
 
     @Override

@@ -34,7 +34,7 @@ public class CommActivity extends ActionBarActivity {
         Ricezione ricezione = new Ricezione(Home.connessione, outputview);
         ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        log("Connesso [" + System.currentTimeMillis() + "]");
+        log("Connesso [" + System.currentTimeMillis()/1000 + "]");
         output.setText("Connesso");
         output.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         invio.setEnabled(true);
@@ -117,7 +117,8 @@ public class CommActivity extends ActionBarActivity {
             try {
                 DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                 outstream.writeBytes(outstring.getText().toString() + "\n");
-                outputview.append(">" + outstring.getText().toString() + "\n");
+                outputview.append(outstring.getText().toString() + "\n");
+                outstring.setText("");
             } catch (IOException e) {
             }
         }
