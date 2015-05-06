@@ -15,10 +15,12 @@ import java.io.InputStreamReader;
 public class Ricezione extends AsyncTask<String, String, Void> {
     private Connessione connessione;
     private TextView output;
+    private TextView log;
 
-    public Ricezione (Connessione connessione, TextView output) {
+    public Ricezione(Connessione connessione, TextView output, TextView log) {
         this.connessione = connessione;
         this.output = output;
+        this.log = log;
     }
 
     @Override
@@ -44,6 +46,11 @@ public class Ricezione extends AsyncTask<String, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        output.append(">" + values[0] + "\n");
+        if (values[0].contains("log")) {
+            log.append(values[0].split(":")[1] + "\n");
+        } else {
+            output.append(">" + values[0] + "\n");
+        }
+
     }
 }

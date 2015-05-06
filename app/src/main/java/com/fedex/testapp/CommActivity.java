@@ -1,15 +1,13 @@
 package com.fedex.testapp;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.DataOutputStream;
@@ -28,10 +26,11 @@ public class CommActivity extends ActionBarActivity {
 
         TextView output = (TextView) findViewById(R.id.txtConnessione);
         TextView outputview = (TextView) findViewById(R.id.txtOutput);
+        TextView log = (TextView) findViewById(R.id.txtLog);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
         Button invio = (Button) findViewById(R.id.inviaBtn);
 
-        Ricezione ricezione = new Ricezione(Home.connessione, outputview);
+        Ricezione ricezione = new Ricezione(Home.connessione, outputview, log);
         ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         log("Connesso [" + System.currentTimeMillis()/1000 + "]");

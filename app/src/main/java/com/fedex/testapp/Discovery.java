@@ -29,8 +29,6 @@ public class Discovery extends AsyncTask<String, String, String> {
             c.setBroadcast(true);
 
             byte[] sendData = "SocketTest_discovery".getBytes();
-
-            //Try the 255.255.255.255 first
             try {
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8889);
                 c.send(sendPacket);
@@ -38,7 +36,6 @@ public class Discovery extends AsyncTask<String, String, String> {
             }
 
             DatagramSocket socket = new DatagramSocket(8889);
-
             for (int i = 0; i < 10; i++) {
                 byte[] recvBuf = new byte[15000];
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);

@@ -81,7 +81,6 @@ public class Home extends ActionBarActivity {
                 ip.setText("");
                 porta.setText("");
             }
-
         });
     }
 
@@ -116,7 +115,7 @@ public class Home extends ActionBarActivity {
         EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
         EditText txtdb = (EditText) findViewById(R.id.txtDb);
         Switch sql = (Switch) findViewById(R.id.switch1);
-         //Inizializzazione da interfaccia
+        //Inizializzazione da interfaccia
         try {
             connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL, txtusr.getText().toString(), txtpwd.getText().toString(), txtdb.getText().toString()); //Creo la connessione
             String cod = connessione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "connetti").get(); //Avvio la connessione
