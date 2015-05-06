@@ -1,45 +1,38 @@
 package com.fedex.testapp;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.InputType;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 public class Home extends ActionBarActivity {
     public static Connessione connessione;
     public static boolean SQL = false;
-    public static HashMap<InetAddress, Integer> servers;
+    public static HashMap<String, String> servers = new HashMap<>();
     private String input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        Log.d("Home", "discovery");
+        Discovery discovery = new Discovery(this, servers); //Avvio il discovery dei server
+        discovery.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -70,6 +63,26 @@ public class Home extends ActionBarActivity {
             txtdb.setVisibility(View.GONE);
             txtporta.setHint("1234");
         }
+        Spinner spinner = (Spinner) findViewById(R.id.serverList);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                TextView ip = (TextView) findViewById(R.id.txtIp);
+                TextView porta = (TextView) findViewById(R.id.txtPorta);
+                ip.setText(parentView.getItemAtPosition(position).toString());
+                porta.setText("8888");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                TextView ip = (TextView) findViewById(R.id.txtIp);
+                TextView porta = (TextView) findViewById(R.id.txtPorta);
+                ip.setText("");
+                porta.setText("");
+            }
+
+        });
     }
 
     @Override
@@ -140,6 +153,17 @@ public class Home extends ActionBarActivity {
             Log.d("Eccezione", ex.getMessage());
         } //TODO correggere
         //TODO
+    }
+
+    public void updateServers() {
+        Spinner serverLister = (Spinner) findViewById(R.id.serverList);
+
+        List<String> list = new ArrayList<String>(servers.keySet());
+        HashMap<String, String> spinnerMap = new HashMap<String, String>();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        serverLister.setAdapter(adapter);
     }
 
     /*public void abilitaSQL(View v) {

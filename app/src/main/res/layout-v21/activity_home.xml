@@ -1,176 +1,184 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="wrap_content" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainact"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".Home"
-    android:id="@+id/mainact">
+    tools:context=".Home">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/scrollView2">
+        android:layout_height="fill_parent">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/linearLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:id="@+id/linearLayout">
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="IP"
                     android:id="@+id/textView"
-                    android:layout_column="3" />
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:text="IP"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:id="@+id/txtIp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_column="2"
-                    android:lines="1"
                     android:layout_row="2"
-                    android:hint="192.168.1.1" />
+                    android:hint="192.168.1.1"
+                    android:lines="1" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/porta"
-                    android:id="@+id/textView2"
-                    android:layout_column="3" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtPorta"
-                    android:layout_column="2"
-                    android:numeric="integer"
-                    android:layout_row="3"
-                    android:hint="1234" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/usr"
-                    android:id="@+id/textView4"
-                    android:layout_column="3"
-                    android:enabled="true"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtUsr"
-                    android:layout_column="2"
-                    android:layout_row="3"
-                    android:hint="username"
-                    android:enabled="true"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/pwd"
-                    android:id="@+id/pwdText"
-                    android:layout_column="3"
-                    android:enabled="true"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtPwd"
-                    android:layout_column="2"
-                    android:layout_row="3"
-                    android:hint="password"
-                    android:password="true"
-                    android:enabled="true"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/database"
-                    android:id="@+id/textView5"
-                    android:layout_column="3"
-                    android:enabled="true"
-                    android:visibility="gone" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtDb"
-                    android:layout_column="2"
-                    android:layout_row="3"
-                    android:hint="database"
-                    android:password="false"
-                    android:enabled="true"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:text="@string/porta"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/txtPorta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_row="3"
+                    android:hint="1234"
+                    android:numeric="integer" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:enabled="true"
+                    android:text="@string/usr"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/txtUsr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_row="3"
+                    android:enabled="true"
+                    android:hint="username"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/pwdText"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:enabled="true"
+                    android:text="@string/pwd"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/txtPwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_row="3"
+                    android:enabled="true"
+                    android:hint="password"
+                    android:password="true"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_column="3"
+                    android:enabled="true"
+                    android:text="@string/database"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/txtDb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:layout_row="3"
+                    android:enabled="true"
+                    android:hint="database"
+                    android:password="false"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:weightSum="1">
 
                 <Button
+                    android:id="@+id/connettiBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/connetti"
-                    android:id="@+id/connettiBtn"
                     android:layout_column="2"
+                    android:layout_row="4"
                     android:enabled="true"
-                    android:onClick="connetti"
                     android:nestedScrollingEnabled="false"
-                    android:layout_row="4" />
+                    android:onClick="connetti"
+                    android:text="@string/connetti" />
+
+                <Spinner
+                    android:id="@+id/serverList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:weightSum="1">
 
             </LinearLayout>
