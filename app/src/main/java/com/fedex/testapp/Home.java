@@ -164,9 +164,4 @@ public class Home extends ActionBarActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         serverLister.setAdapter(adapter);
     }
-
-    /*public void abilitaSQL(View v) {
-        SQL = !SQL;
-
-    }*/
 }

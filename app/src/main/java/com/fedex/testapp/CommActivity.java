@@ -1,5 +1,6 @@
 package com.fedex.testapp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.DataOutputStream;
@@ -141,17 +143,17 @@ public class CommActivity extends ActionBarActivity {
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
         Button btnStream = (Button) findViewById(R.id.btnStream);
         Button btnInfo = (Button) findViewById(R.id.btnInfo);
-        String txt = "StreamCamera";
+        String txt = "StartUDPStream";
 
         try {
             if (!streaming) {
                 streaming = true;
                 disconnetti.setEnabled(false);
                 btnInfo.setEnabled(false);
-                btnStream.setText("StreamStop");
+                btnStream.setText("Stream Stop");
                 DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                 outstream.writeBytes(txt + "\n");
-                outputview.append(txt + "\n");
+                log(txt + "\n");
                 outstring.setText("");
                 new Thread() {
                     public void run() {
@@ -178,7 +180,7 @@ public class CommActivity extends ActionBarActivity {
                 streaming = false;
                 disconnetti.setEnabled(true);
                 btnInfo.setEnabled(true);
-                btnStream.setText("StreamStart");
+                btnStream.setText("Stream Start");
             }
         } catch (IOException e) {
         }
@@ -206,6 +208,19 @@ public class CommActivity extends ActionBarActivity {
             layout.setVisibility(View.VISIBLE);
         } else {
             layout.setVisibility(View.GONE);
+        }
+    }
+
+    public void play(View v) {
+        try {
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+            String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
+            DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
+            outstream.writeBytes(txt + "\n");
+            log(txt + "\n");
+            Intent intent = new Intent(this, PlayActivity.class);
+            startActivity(intent);
+        } catch (IOException ex) {
         }
     }
 }
