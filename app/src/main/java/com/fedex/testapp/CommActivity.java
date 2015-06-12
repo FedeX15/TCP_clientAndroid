@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.DataOutputStream;
@@ -139,7 +139,6 @@ public class CommActivity extends ActionBarActivity {
 
     public void inviaStreamCamera(View v) {
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        TextView outputview = (TextView) findViewById(R.id.txtOutput);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
         Button btnStream = (Button) findViewById(R.id.btnStream);
         Button btnInfo = (Button) findViewById(R.id.btnInfo);
@@ -153,7 +152,7 @@ public class CommActivity extends ActionBarActivity {
                 btnStream.setText("Stream Stop");
                 DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                 outstream.writeBytes(txt + "\n");
-                log(txt + "\n");
+                log(txt);
                 outstring.setText("");
                 new Thread() {
                     public void run() {
@@ -213,11 +212,11 @@ public class CommActivity extends ActionBarActivity {
 
     public void play(View v) {
         try {
-            RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+            ScrollView layout = (ScrollView) findViewById(R.id.scrollView4);
             String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
             DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
             outstream.writeBytes(txt + "\n");
-            log(txt + "\n");
+            log(txt);
             Intent intent = new Intent(this, PlayActivity.class);
             startActivity(intent);
         } catch (IOException ex) {
