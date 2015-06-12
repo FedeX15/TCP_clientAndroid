@@ -51,6 +51,5 @@ public class Ricezione extends AsyncTask<String, String, Void> {
         } else {
             output.append(">" + values[0] + "\n");
         }
-
     }
 }
