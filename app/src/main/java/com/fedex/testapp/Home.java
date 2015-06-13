@@ -149,7 +149,6 @@ public class Home extends ActionBarActivity {
                     break;
             }
         } catch (Exception ex) {
-            Log.d("Eccezione", ex.getMessage());
         } //TODO correggere
         //TODO
     }

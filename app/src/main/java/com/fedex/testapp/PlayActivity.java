@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
 import java.io.IOException;
@@ -23,8 +24,12 @@ public class PlayActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-
+        setTitle(getString(R.string.play));
+        Button opp = (Button) findViewById(R.id.btnOpponent);
+        Button usr = (Button) findViewById(R.id.btnUser);
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+        opp.setWidth(CommActivity.width);
+        usr.setWidth(CommActivity.width);
         play = true;
         layout.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent me) {
@@ -53,16 +58,26 @@ public class PlayActivity extends ActionBarActivity {
                 public void run() {
                     String txt = "";
                     int x;
+                    int y;
                     sendData = new byte[1500];
                     do {
                         try {
+                            sendData = new byte[1500];
                             DatagramPacket recvPacket = new DatagramPacket(sendData, sendData.length);
                             streamsocket.receive(recvPacket);
                             txt = new String(sendData, 0, recvPacket.getLength());
-                            x = Integer.parseInt(txt);
-                            setOpponentPosition(x);
+                            if (txt.startsWith("Opponent")) {
+                                x = Integer.parseInt(txt.split("&")[1]);
+                                setOpponentPosition(x);
+                            } else if (txt.startsWith("Ball")) {
+                                txt = txt.split("&")[1];
+                                x = Integer.parseInt(txt.split("-")[0]);
+                                y = Integer.parseInt(txt.split("-")[1]);
+                                setBallPosition(x, y);
+                            }
                         } catch (IOException ex) {
                         } catch (NumberFormatException ex) {
+                        } catch (StringIndexOutOfBoundsException ex) {
                         }
                     } while (play);
                 }
@@ -75,12 +90,30 @@ public class PlayActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_play, menu);
+        getSupportActionBar().setHomeButtonEnabled(false);      // Disable the button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false); // Remove the left caret
+        getSupportActionBar().setDisplayShowHomeEnabled(false); // Remove the icon
         return true;
     }
 
-    public void setOpponentPosition(int x) {
-        Button btn = (Button) findViewById(R.id.btnOpponent);
-        btn.setX(x);
+    public void setOpponentPosition(final int x) {
+        final Button btn = (Button) findViewById(R.id.btnOpponent);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                btn.setX(x);
+            }
+        });
+    }
+
+    public void setBallPosition(final int x, final int y) {
+        final RadioButton ball = (RadioButton) findViewById(R.id.ball);
+        final RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                ball.setX(x);
+                ball.setY(layout.getHeight() - y - 100);
+            }
+        });
     }
 
     @Override

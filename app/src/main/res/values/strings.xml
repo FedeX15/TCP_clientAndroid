@@ -25,5 +25,6 @@
     <string name="impostazioni">Impostazioni</string>
     <string name="comunicazione">Comunicazione</string>
     <string name="title_activity_play">PlayActivity</string>
+    <string name="play">Pong</string>
 
 </resources>

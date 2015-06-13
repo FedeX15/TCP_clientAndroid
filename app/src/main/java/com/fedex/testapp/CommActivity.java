@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class CommActivity extends ActionBarActivity {
+    static int width;
     private boolean streaming = false;
 
     @Override
@@ -213,6 +215,9 @@ public class CommActivity extends ActionBarActivity {
     public void play(View v) {
         try {
             ScrollView layout = (ScrollView) findViewById(R.id.scrollView4);
+
+            Log.d("Dimensions", layout.getWidth() + " " + layout.getHeight());
+            CommActivity.width = (layout.getWidth() * 10) / 100;
             String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
             DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
             outstream.writeBytes(txt + "\n");
