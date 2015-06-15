@@ -41,7 +41,7 @@ public class CommActivity extends ActionBarActivity {
         Ricezione ricezione = new Ricezione(Home.connessione, outputview, log);
         ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        log("Connesso [" + System.currentTimeMillis() / 1000 + "]");
+        log("Connesso");
         output.setText("Connesso");
         output.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         invio.setEnabled(true);
@@ -142,6 +142,7 @@ public class CommActivity extends ActionBarActivity {
     public void inviaStreamCamera(View v) {
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
+        Button play = (Button) findViewById(R.id.button);
         Button btnStream = (Button) findViewById(R.id.btnStream);
         Button btnInfo = (Button) findViewById(R.id.btnInfo);
         String txt = "StartUDPStream";
@@ -151,6 +152,7 @@ public class CommActivity extends ActionBarActivity {
                 streaming = true;
                 disconnetti.setEnabled(false);
                 btnInfo.setEnabled(false);
+                play.setEnabled(false);
                 btnStream.setText("Stream Stop");
                 DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                 outstream.writeBytes(txt + "\n");
@@ -161,13 +163,20 @@ public class CommActivity extends ActionBarActivity {
                         try {
                             DatagramSocket streamsocket = new DatagramSocket(8890);
                             byte[] sendData;
-
+                            final TextView outputview = (TextView) findViewById(R.id.txtOutput);
+                            final String oldtxt = outputview.getText().toString();
                             double n;
                             do {
                                 n = Math.random();
                                 sendData = (n + "").getBytes();
                                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, Home.connessione.socket.getInetAddress(), 8890);
                                 streamsocket.send(sendPacket);
+                                final double x = n;
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        outputview.setText(oldtxt + x + "\n");
+                                    }
+                                });
                             } while (streaming);
                             sendData = ("Close").getBytes();
                             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, Home.connessione.socket.getInetAddress(), 8890);
@@ -181,6 +190,7 @@ public class CommActivity extends ActionBarActivity {
                 streaming = false;
                 disconnetti.setEnabled(true);
                 btnInfo.setEnabled(true);
+                play.setEnabled(true);
                 btnStream.setText("Stream Start");
             }
         } catch (IOException e) {
