@@ -70,7 +70,7 @@ public class Home extends ActionBarActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 TextView ip = (TextView) findViewById(R.id.txtIp);
                 TextView porta = (TextView) findViewById(R.id.txtPorta);
-                ip.setText(parentView.getItemAtPosition(position).toString());
+                ip.setText(servers.get(parentView.getItemAtPosition(position).toString()));
                 porta.setText("8888");
             }
 
@@ -157,7 +157,7 @@ public class Home extends ActionBarActivity {
         Spinner serverLister = (Spinner) findViewById(R.id.serverList);
 
         List<String> list = new ArrayList<String>(servers.keySet());
-        HashMap<String, String> spinnerMap = new HashMap<String, String>();
+        //HashMap<String, String> spinnerMap = new HashMap<String, String>();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
