@@ -1,7 +1,6 @@
 package com.fedex.testapp;
 
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.EditText;
 

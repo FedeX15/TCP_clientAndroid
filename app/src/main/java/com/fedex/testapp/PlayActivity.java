@@ -1,7 +1,7 @@
 package com.fedex.testapp;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -15,7 +15,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-public class PlayActivity extends ActionBarActivity {
+public class PlayActivity extends Activity {
     DatagramSocket streamsocket;
     byte[] sendData;
     boolean play;
@@ -90,9 +90,9 @@ public class PlayActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_play, menu);
-        getSupportActionBar().setHomeButtonEnabled(false);      // Disable the button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false); // Remove the left caret
-        getSupportActionBar().setDisplayShowHomeEnabled(false); // Remove the icon
+        getActionBar().setHomeButtonEnabled(false);      // Disable the button
+        getActionBar().setDisplayHomeAsUpEnabled(false); // Remove the left caret
+        getActionBar().setDisplayShowHomeEnabled(false); // Remove the icon
         return true;
     }
 

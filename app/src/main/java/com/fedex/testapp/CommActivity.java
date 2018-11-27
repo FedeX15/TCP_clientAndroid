@@ -1,9 +1,9 @@
 package com.fedex.testapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
 
-public class CommActivity extends ActionBarActivity {
+public class CommActivity extends Activity {
     static int width;
     private boolean streaming = false;
 
