@@ -36,7 +36,40 @@ public class CommActivity extends Activity {
         TextView outputview = (TextView) findViewById(R.id.txtOutput);
         TextView log = (TextView) findViewById(R.id.txtLog);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
+        disconnetti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommActivity.this.disconnetti(view);
+            }
+        });
         Button invio = (Button) findViewById(R.id.inviaBtn);
+        invio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommActivity.this.invia(view);
+            }
+        });
+        Button stream = (Button) findViewById(R.id.btnStream);
+        stream.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommActivity.this.inviaStreamCamera(view);
+            }
+        });
+        Button info = (Button) findViewById(R.id.btnInfo);
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommActivity.this.inviaGetServerInfo(view);
+            }
+        });
+        Button play = (Button) findViewById(R.id.btnPlay);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CommActivity.this.play(view);
+            }
+        });
 
         Ricezione ricezione = new Ricezione(Home.connessione, outputview, log);
         ricezione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -142,7 +175,7 @@ public class CommActivity extends Activity {
     public void inviaStreamCamera(View v) {
         EditText outstring = (EditText) findViewById(R.id.txtStringa);
         Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-        Button play = (Button) findViewById(R.id.button);
+        Button play = (Button) findViewById(R.id.btnPlay);
         Button btnStream = (Button) findViewById(R.id.btnStream);
         Button btnInfo = (Button) findViewById(R.id.btnInfo);
         String txt = "StartUDPStream";
