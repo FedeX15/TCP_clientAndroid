@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.fedex.testapp"
-        minSdkVersion 19
-        targetSdkVersion 21
+        minSdkVersion 21
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
