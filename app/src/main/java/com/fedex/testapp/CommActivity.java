@@ -39,35 +39,185 @@ public class CommActivity extends Activity {
         disconnetti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommActivity.this.disconnetti(view);
+                TextView output = (TextView) findViewById(R.id.txtConnessione);
+                try {
+                    if (Home.SQL) {
+                        Home.connessione.connection.close();
+                        Home.connessione = null;
+                    } else {
+                        Home.connessione.socket.close();
+                        Home.connessione = null;
+                    }
+                    output.setText("Disconnesso");
+                    output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                    onBackPressed();
+                } catch (IOException e) {
+                    output.setText("ERRORE [IO]");
+                } catch (SQLException e) {
+                    output.setText("ERRORE [SQL]");
+                }
             }
         });
         Button invio = (Button) findViewById(R.id.inviaBtn);
         invio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommActivity.this.invia(view);
+                Thread t = new Thread() {
+                    @Override
+                    public void run() {
+                         final EditText outstring = (EditText) findViewById(R.id.txtStringa);
+                         final TextView outputview = (TextView) findViewById(R.id.txtOutput); //Inizializzazione da interfaccia
+
+                        if (Home.SQL) {
+                            Invio invio = new Invio(Home.connessione.socket, Home.connessione.connection, Home.SQL, outstring.getText().toString());
+                            try {
+                                String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get(); //permette più asynctask contemporaneamente
+                                if (output.startsWith("ERRORE")) {
+                                    log(output);
+                                } else {
+                                    outputview.setText(output);
+                                }
+                            } catch (InterruptedException e) {
+                            } catch (ExecutionException e) {
+                            }
+                        } else {
+                            try {
+                                DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
+                                outstream.writeBytes(outstring.getText().toString() + "\n");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        outputview.append(outstring.getText().toString() + "\n");
+                                    }
+                                });
+                                outstring.setText("");
+                            } catch (IOException e) {
+                            }
+                        }
+
+                    }
+                };
+                t.start();
             }
         });
         Button stream = (Button) findViewById(R.id.btnStream);
         stream.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommActivity.this.inviaStreamCamera(view);
+                Thread t = new Thread() {
+                    @Override
+                    public void run() {
+                        EditText outstring = (EditText) findViewById(R.id.txtStringa);
+                        Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
+                        Button play = (Button) findViewById(R.id.btnPlay);
+                        Button btnStream = (Button) findViewById(R.id.btnStream);
+                        Button btnInfo = (Button) findViewById(R.id.btnInfo);
+                        String txt = "StartUDPStream";
+
+                        try {
+                            if (!streaming) {
+                                streaming = true;
+                                disconnetti.setEnabled(false);
+                                btnInfo.setEnabled(false);
+                                play.setEnabled(false);
+                                btnStream.setText("Stream Stop");
+                                DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
+                                outstream.writeBytes(txt + "\n");
+                                log(txt);
+                                outstring.setText("");
+                                new Thread() {
+                                    public void run() {
+                                        try {
+                                            DatagramSocket streamsocket = new DatagramSocket(8890);
+                                            byte[] sendData;
+                                            final TextView outputview = (TextView) findViewById(R.id.txtOutput);
+                                            final String oldtxt = outputview.getText().toString();
+                                            double n;
+                                            do {
+                                                n = Math.random();
+                                                sendData = (n + "").getBytes();
+                                                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, Home.connessione.socket.getInetAddress(), 8890);
+                                                streamsocket.send(sendPacket);
+                                                final double x = n;
+                                                runOnUiThread(new Runnable() {
+                                                    public void run() {
+                                                        outputview.setText(oldtxt + x + "\n");
+                                                    }
+                                                });
+                                            } while (streaming);
+                                            sendData = ("Close").getBytes();
+                                            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, Home.connessione.socket.getInetAddress(), 8890);
+                                            streamsocket.send(sendPacket);
+                                            streamsocket.close();
+                                        } catch (IOException e) {
+                                        }
+                                    }
+                                }.start();
+                            } else {
+                                streaming = false;
+                                disconnetti.setEnabled(true);
+                                btnInfo.setEnabled(true);
+                                play.setEnabled(true);
+                                btnStream.setText("Stream Start");
+                            }
+                        } catch (IOException e) {
+                        }
+                    }
+                };
+                t.start();
             }
         });
         Button info = (Button) findViewById(R.id.btnInfo);
         info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommActivity.this.inviaGetServerInfo(view);
+                Thread t = new Thread() {
+                    @Override
+                    public void run() {
+                        final EditText outstring = (EditText) findViewById(R.id.txtStringa);
+                        final TextView outputview = (TextView) findViewById(R.id.txtOutput);
+                        final String txt = "GetServerInfo";
+
+                        try {
+                            DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
+                            outstream.writeBytes(txt + "\n");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    outputview.append(txt + "\n");
+                                }
+                            });
+                            outstring.setText("");
+                        } catch (IOException e) {
+                        }
+                    }
+                };
+                t.start();
             }
         });
         Button play = (Button) findViewById(R.id.btnPlay);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommActivity.this.play(view);
+                Thread t = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            ScrollView layout = (ScrollView) findViewById(R.id.scrollView4);
+
+                            Log.d("Dimensions", layout.getWidth() + " " + layout.getHeight());
+                            CommActivity.width = (layout.getWidth() * 10) / 100;
+                            String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
+                            DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
+                            outstream.writeBytes(txt + "\n");
+                            log(txt);
+                            Intent intent = new Intent(getApplicationContext(), PlayActivity.class);
+                            startActivity(intent);
+                        } catch (IOException ex) {
+                        }
+                    }
+                };
+                t.start();
             }
         });
 
@@ -90,11 +240,6 @@ public class CommActivity extends Activity {
     }
 
     @Override
-    public void onBackPressed() {
-        disconnetti(null);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -109,126 +254,6 @@ public class CommActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void disconnetti(View v) {
-        TextView output = (TextView) findViewById(R.id.txtConnessione);
-
-        try {
-            if (Home.SQL) {
-                Home.connessione.connection.close();
-                Home.connessione = null;
-            } else {
-                Home.connessione.socket.close();
-                Home.connessione = null;
-            }
-            output.setText("Disconnesso");
-            output.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            super.onBackPressed();
-        } catch (IOException e) {
-            output.setText("ERRORE [IO]");
-        } catch (SQLException e) {
-            output.setText("ERRORE [SQL]");
-        }
-    }
-
-    public void invia(View v) { //Funzione richiamata dal pulsante "Invia"
-        EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        TextView outputview = (TextView) findViewById(R.id.txtOutput); //Inizializzazione da interfaccia
-
-        if (Home.SQL) {
-            Invio invio = new Invio(Home.connessione.socket, Home.connessione.connection, Home.SQL, outstring.getText().toString());
-
-            try {
-                String output = invio.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get(); //permette più asynctask contemporaneamente
-                if (output.startsWith("ERRORE")) {
-                    log(output);
-                } else {
-                    outputview.setText(output);
-                }
-            } catch (InterruptedException e) {
-            } catch (ExecutionException e) {
-            }
-        } else {
-            try {
-                DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
-                outstream.writeBytes(outstring.getText().toString() + "\n");
-                outputview.append(outstring.getText().toString() + "\n");
-                outstring.setText("");
-            } catch (IOException e) {
-            }
-        }
-    }
-
-    public void inviaGetServerInfo(View v) {
-        EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        TextView outputview = (TextView) findViewById(R.id.txtOutput);
-        String txt = "GetServerInfo";
-
-        try {
-            DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
-            outstream.writeBytes(txt + "\n");
-            outputview.append(txt + "\n");
-            outstring.setText("");
-        } catch (IOException e) {
-        }
-    }
-
-    public void inviaStreamCamera(View v) {
-        EditText outstring = (EditText) findViewById(R.id.txtStringa);
-        Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-        Button play = (Button) findViewById(R.id.btnPlay);
-        Button btnStream = (Button) findViewById(R.id.btnStream);
-        Button btnInfo = (Button) findViewById(R.id.btnInfo);
-        String txt = "StartUDPStream";
-
-        try {
-            if (!streaming) {
-                streaming = true;
-                disconnetti.setEnabled(false);
-                btnInfo.setEnabled(false);
-                play.setEnabled(false);
-                btnStream.setText("Stream Stop");
-                DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
-                outstream.writeBytes(txt + "\n");
-                log(txt);
-                outstring.setText("");
-                new Thread() {
-                    public void run() {
-                        try {
-                            DatagramSocket streamsocket = new DatagramSocket(8890);
-                            byte[] sendData;
-                            final TextView outputview = (TextView) findViewById(R.id.txtOutput);
-                            final String oldtxt = outputview.getText().toString();
-                            double n;
-                            do {
-                                n = Math.random();
-                                sendData = (n + "").getBytes();
-                                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, Home.connessione.socket.getInetAddress(), 8890);
-                                streamsocket.send(sendPacket);
-                                final double x = n;
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        outputview.setText(oldtxt + x + "\n");
-                                    }
-                                });
-                            } while (streaming);
-                            sendData = ("Close").getBytes();
-                            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, Home.connessione.socket.getInetAddress(), 8890);
-                            streamsocket.send(sendPacket);
-                            streamsocket.close();
-                        } catch (IOException e) {
-                        }
-                    }
-                }.start();
-            } else {
-                streaming = false;
-                disconnetti.setEnabled(true);
-                btnInfo.setEnabled(true);
-                play.setEnabled(true);
-                btnStream.setText("Stream Start");
-            }
-        } catch (IOException e) {
-        }
-    }
 
     public void log(String str) {
         TextView logview = (TextView) findViewById(R.id.txtLog);
@@ -252,22 +277,6 @@ public class CommActivity extends Activity {
             layout.setVisibility(View.VISIBLE);
         } else {
             layout.setVisibility(View.GONE);
-        }
-    }
-
-    public void play(View v) {
-        try {
-            ScrollView layout = (ScrollView) findViewById(R.id.scrollView4);
-
-            Log.d("Dimensions", layout.getWidth() + " " + layout.getHeight());
-            CommActivity.width = (layout.getWidth() * 10) / 100;
-            String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
-            DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
-            outstream.writeBytes(txt + "\n");
-            log(txt);
-            Intent intent = new Intent(this, PlayActivity.class);
-            startActivity(intent);
-        } catch (IOException ex) {
         }
     }
 }

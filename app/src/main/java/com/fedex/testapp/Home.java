@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -29,6 +30,55 @@ public class Home extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        Button connectbtn = findViewById(R.id.connettiBtn);
+        connectbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText iptxt = (EditText) findViewById(R.id.txtIp);
+                EditText portatxt = (EditText) findViewById(R.id.txtPorta);
+                EditText txtusr = (EditText) findViewById(R.id.txtUsr);
+                EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
+                EditText txtdb = (EditText) findViewById(R.id.txtDb);
+                Switch sql = (Switch) findViewById(R.id.switch1);
+                //Inizializzazione da interfaccia
+                try {
+                    connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL, txtusr.getText().toString(), txtpwd.getText().toString(), txtdb.getText().toString()); //Creo la connessione
+                    String cod = connessione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "connetti").get(); //Avvio la connessione
+                    //Log.v("Connessione", "tentativone");
+                    //Perché su classe diversa: necessario thread a parte per operazioni di rete (perché Android vuole così, specifica di sicurezza)
+
+                    switch (Integer.parseInt(cod)) { //A seconda del codice ritornato, stampo il risultato della connessione
+                        case -1:
+                            if (SQL) {
+                                //output.setText("ERRORE [SQL]");
+                            } else {
+                                //output.setText("ERRORE [UnknownHost]");
+                            }
+                            break;
+
+                        case -2:
+                            if (SQL) {
+                                //output.setText("ERRORE [ClassNotFound]");
+                            } else {
+                                //output.setText("ERRORE [IO]");
+                            }
+                            break;
+
+                        case -3:
+                            //output.setText("ERRORE [NumberFormat]");
+                            break;
+
+                        case 0:
+                            Intent intent = new Intent(getApplicationContext(), CommActivity.class);
+                            startActivity(intent);
+                            break;
+                    }
+                } catch (Exception ex) {
+                } //TODO correggere
+                //TODO
+            }
+        });
 
         Log.d("Home", "discovery");
         Discovery discovery = new Discovery(this, servers); //Avvio il discovery dei server
@@ -106,51 +156,6 @@ public class Home extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void connetti(View v) { //Funzione richiamata dal pulsante "Connetti"
-        EditText iptxt = (EditText) findViewById(R.id.txtIp);
-        EditText portatxt = (EditText) findViewById(R.id.txtPorta);
-        EditText txtusr = (EditText) findViewById(R.id.txtUsr);
-        EditText txtpwd = (EditText) findViewById(R.id.txtPwd);
-        EditText txtdb = (EditText) findViewById(R.id.txtDb);
-        Switch sql = (Switch) findViewById(R.id.switch1);
-        //Inizializzazione da interfaccia
-        try {
-            connessione = new Connessione(iptxt.getText().toString(), Integer.parseInt(portatxt.getText().toString()), SQL, txtusr.getText().toString(), txtpwd.getText().toString(), txtdb.getText().toString()); //Creo la connessione
-            String cod = connessione.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "connetti").get(); //Avvio la connessione
-            Log.v("Connessione", "tentativone");
-            //Perché su classe diversa: necessario thread a parte per operazioni di rete (perché Android vuole così, specifica di sicurezza)
-
-            switch (Integer.parseInt(cod)) { //A seconda del codice ritornato, stampo il risultato della connessione
-                case -1:
-                    if (SQL) {
-                        //output.setText("ERRORE [SQL]");
-                    } else {
-                        //output.setText("ERRORE [UnknownHost]");
-                    }
-                    break;
-
-                case -2:
-                    if (SQL) {
-                        //output.setText("ERRORE [ClassNotFound]");
-                    } else {
-                        //output.setText("ERRORE [IO]");
-                    }
-                    break;
-
-                case -3:
-                    //output.setText("ERRORE [NumberFormat]");
-                    break;
-
-                case 0:
-                    Intent intent = new Intent(this, CommActivity.class);
-                    startActivity(intent);
-                    break;
-            }
-        } catch (Exception ex) {
-        } //TODO correggere
-        //TODO
     }
 
     public void updateServers() {
