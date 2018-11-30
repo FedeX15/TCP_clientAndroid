@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -108,22 +110,36 @@ public class CommActivity extends Activity {
                     @Override
                     public void run() {
                         EditText outstring = (EditText) findViewById(R.id.txtStringa);
-                        Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
-                        Button play = (Button) findViewById(R.id.btnPlay);
-                        Button btnStream = (Button) findViewById(R.id.btnStream);
-                        Button btnInfo = (Button) findViewById(R.id.btnInfo);
-                        String txt = "StartUDPStream";
+                        final Button disconnetti = (Button) findViewById(R.id.disconnettiBtn);
+                        final Button play = (Button) findViewById(R.id.btnPlay);
+                        final Button btnStream = (Button) findViewById(R.id.btnStream);
+                        final Button btnInfo = (Button) findViewById(R.id.btnInfo);
+                        final String txt = "StartUDPStream";
 
                         try {
                             if (!streaming) {
                                 streaming = true;
-                                disconnetti.setEnabled(false);
-                                btnInfo.setEnabled(false);
-                                play.setEnabled(false);
-                                btnStream.setText("Stream Stop");
+                                Looper.prepare();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        disconnetti.setEnabled(false);
+                                        btnInfo.setEnabled(false);
+                                        play.setEnabled(false);
+                                    }
+                                }, 100);
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        btnStream.setText("Stream Stop");
+                                    }
+                                });
                                 DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                                 outstream.writeBytes(txt + "\n");
-                                log(txt);
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        log(txt);
+                                    }
+                                });
                                 outstring.setText("");
                                 new Thread() {
                                     public void run() {
@@ -155,10 +171,20 @@ public class CommActivity extends Activity {
                                 }.start();
                             } else {
                                 streaming = false;
-                                disconnetti.setEnabled(true);
-                                btnInfo.setEnabled(true);
-                                play.setEnabled(true);
-                                btnStream.setText("Stream Start");
+                                Looper.prepare();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        disconnetti.setEnabled(true);
+                                        btnInfo.setEnabled(true);
+                                        play.setEnabled(true);
+                                    }
+                                }, 100);
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        btnStream.setText("Stream Start");
+                                    }
+                                });
                             }
                         } catch (IOException e) {
                         }
@@ -207,10 +233,14 @@ public class CommActivity extends Activity {
 
                             Log.d("Dimensions", layout.getWidth() + " " + layout.getHeight());
                             CommActivity.width = (layout.getWidth() * 10) / 100;
-                            String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
+                            final String txt = "Play&" + layout.getWidth() + "-" + layout.getHeight();
                             DataOutputStream outstream = new DataOutputStream(Home.connessione.socket.getOutputStream());
                             outstream.writeBytes(txt + "\n");
-                            log(txt);
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                  log(txt);
+                                }
+                            });
                             Intent intent = new Intent(getApplicationContext(), PlayActivity.class);
                             startActivity(intent);
                         } catch (IOException ex) {

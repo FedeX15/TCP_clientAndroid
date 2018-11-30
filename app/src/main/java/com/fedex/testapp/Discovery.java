@@ -53,7 +53,7 @@ public class Discovery extends AsyncTask<String, String, String> {
         if (values[0].contains("SocketTest")) {
             String hostname = values[0].split("&")[1].split("/")[0];
             String ip = values[0].split("&")[1].split("/")[1];
-            servers.put(ip, hostname);
+            servers.put(hostname, ip);
             home.updateServers();
             Log.d(hostname, ip);
         }
