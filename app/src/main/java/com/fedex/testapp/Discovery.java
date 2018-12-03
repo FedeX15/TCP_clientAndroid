@@ -39,7 +39,11 @@ public class Discovery extends AsyncTask<String, String, String> {
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8889);
                 try {
                     c.send(sendPacket);
-                } catch (IOException e) {}
+                } catch (IOException ex) {
+                    //TODO FIX PLS
+                    Log.d("Discovery", "errore pacchetto inviato");
+                    ex.printStackTrace();
+                }
 
                 try {
                     byte[] recvBuf = new byte[15000];
